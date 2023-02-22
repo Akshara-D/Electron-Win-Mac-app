@@ -1,24 +1,24 @@
+name: CICD
 on:
   push:
     branches: [ "master" ]
-  workflow_dispatch:
-
-env:
-  AZURE_WEBAPP_NAME: sample-node-js-webapp-lg
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
-  NODE_VERSION: '16.x'
-
-permissions:
-  contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.1
+      - name: Install npm electron
+        run: |
+          npm install --save-dev @electron-forge/cli
+          npx electron-forge import
+      - name: Create distributable package
+        run: npm run make
+      - name: List
+        run: |
+          ls -la
+          pwd
