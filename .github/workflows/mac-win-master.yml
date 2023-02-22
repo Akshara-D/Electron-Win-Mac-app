@@ -20,16 +20,16 @@ jobs:
         run: npm run make
       - name: List
         run: |
-          ls out/make
+          ls -la out/make
           echo 1
-          ls out/
+          ls -la out/
           echo 2
-          ls out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/
+          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/my-electron-app
           echo 3
-          ls out/my-electron-app-darwin-x64/my-electron-app.app/Contents/
+          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/Contents/Resources
           echo 4
-          ls out/my-electron-app-darwin-x64/my-electron-app.app/
-          echo 5 
+          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/Contents/Frameworks
+          echo 5
+          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/
+          echo 6 
           ls out/make/zip/darwin/x64/
-          echo 6
-          ls out/make/zip
