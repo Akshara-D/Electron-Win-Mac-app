@@ -16,24 +16,37 @@ jobs:
         run: |
           npm install --save-dev @electron-forge/cli
           npx electron-forge import
+          
       - name: Create distributable package
         run: npm run make
-      - name: List
+        
+      - name: Upload app artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: mac-app
+          path: out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/
+          
+  build_on_wind:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.1
+      - name: Install npm electron
         run: |
-          echo 1
-          ls -la out/
-          echo 2
-          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/my-electron-app
-          echo 3
-          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/Contents/Resources
-          echo 4
-          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/Contents/Frameworks
-          echo 5
-          ls -la out/my-electron-app-darwin-x64/my-electron-app.app/
-          echo 6 
-          ls out/make/zip/darwin/x64/
+          npm install --save-dev @electron-forge/cli
+          npx electron-forge import
+          
+      - name: Create distributable package
+        run: npm run make
+        
       - name: Upload app artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: win-app
-          path: .
+          path: out\my-electron-app-win32-x64
+
+
+
