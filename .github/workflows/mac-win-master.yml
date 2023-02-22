@@ -20,7 +20,6 @@ jobs:
         run: npm run make
       - name: List
         run: |
-          ls -la out/make
           echo 1
           ls -la out/
           echo 2
@@ -33,3 +32,8 @@ jobs:
           ls -la out/my-electron-app-darwin-x64/my-electron-app.app/
           echo 6 
           ls out/make/zip/darwin/x64/
+      - name: Upload app artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: win-app
+          path: .
