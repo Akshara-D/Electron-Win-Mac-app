@@ -4,7 +4,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build_on_mac:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,6 +19,18 @@ jobs:
           
       - name: Create distributable package
         run: npm run make
+        
+      - name: Electron App Code signing Action
+        uses: samuelmeuli/action-electron-builder@v1.6.0
+        with:
+           github_token: ${{ secrets.GH_TOKEN }}
+          # Base64-encoded code signing certificate for macOS
+           mac_certs:  optional
+         # Password for decrypting `mac_certs`
+           mac_certs_password:  optional
+          # Whether the app should be released after a successful build
+           release:  optional
+           package_root: out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/
         
       - name: Upload app artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -41,6 +53,14 @@ jobs:
           
       - name: Create distributable package
         run: npm run make
+      
+      - name: Code sign windows file
+        uses: dlemstra/code-sign-action@v1
+        with:
+          certificate: '${{ secrets.CERTIFICATE }}'
+          password: '${{ secrets.CERTIFICATE_PASSWORD }}' 
+          folder: out\my-electron-app-win32-x64
+          recursive: true
         
       - name: Upload app artifact for deployment job
         uses: actions/upload-artifact@v2
