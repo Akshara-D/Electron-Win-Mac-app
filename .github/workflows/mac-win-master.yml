@@ -23,16 +23,21 @@ jobs:
       - name: Electron App Code signing Action
         uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
-           github_token: ${{ secrets.GH_TOKEN }}
-          # Base64-encoded code signing certificate for macOS
-           mac_certs:  optional
-         # Password for decrypting `mac_certs`
-           mac_certs_password:  optional
-          # Whether the app should be released after a successful build
-           release:  optional
+           github_token: '${{ secrets.GH_TOKEN }}'
+           mac_certs:  ${{ secrets.MAC_CERTS }} # Base64-encoded code signing certificate for macOS
+           mac_certs_password:  ${{ secrets.MAC_PWD }}
            package_root: out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/
-        
-      - name: Upload app artifact for deployment job
+          
+      - name: Xcode notarizer
+        uses: love-actions/xcode-notarizer@v1.0.2
+        with:
+         product-path: out/my-electron-app-darwin-x64/my-electron-app.app/Contents/MacOS/
+         apple-id: '${{ secrets.APPLE_ID }}'
+         app-password: '${{ secrets.APPLE_PWD }}'
+         team-id: '${{ secrets.APPLE_TEAM_ID }}' 
+         staple: is true
+    
+      - name: Upload app artifact for deployment
         uses: actions/upload-artifact@v2
         with:
           name: mac-app
@@ -60,9 +65,9 @@ jobs:
           certificate: '${{ secrets.CERTIFICATE }}'
           password: '${{ secrets.CERTIFICATE_PASSWORD }}' 
           folder: out\my-electron-app-win32-x64
-          recursive: true
+          recursive: true 
         
-      - name: Upload app artifact for deployment job
+      - name: Package Release App
         uses: actions/upload-artifact@v2
         with:
           name: win-app
